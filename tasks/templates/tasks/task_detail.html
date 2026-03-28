@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{{ task.title }}{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="card-title mb-4">{{ task.title }}</h1>
+
+        <p class="mb-1"><strong>Projekt:</strong> {{ task.project }}</p>
+        <p class="mb-1"><strong>Status:</strong> {{ task.get_status_display }}</p>
+        <p class="mb-1"><strong>Opis:</strong></p>
+        <p class="mb-1">{{ task.description|default:"Brak opisu" }}</p>
+
+        <p class="mb-1"><strong>Termin:</strong> {{ task.due_date|default:"Brak terminu" }}</p>
+        <p class="mb-1"><strong>Utworzono:</strong> {{ task.created_at }}</p>
+
+        <p class="mb-1"><strong>Tagi:</strong>
+            {% for tag in task.tags.all %}
+                <span class="badge bg-info text-dark">{{ tag.name }}</span>
+            {% empty %}
+                Brak tagów
+            {% endfor %}
+        </p>
+
+        <div class="mt-4 d-flex gap-2">
+            <a href="{% url 'task_edit' task.pk %}" class="btn btn-warning">Edytuj</a>
+            <a href="{% url 'task_delete' task.pk %}" class="btn btn-danger">Usuń</a>
+            <a href="{% url 'task_list' %}" class="btn btn-secondary">Wróć</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

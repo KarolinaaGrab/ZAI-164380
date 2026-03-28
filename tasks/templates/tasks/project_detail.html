@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1>{{ project.name }}</h1>
+        <p>{{ project.description|default:"Brak opisu" }}</p>
+        <p class="text-muted">Utworzono: {{ project.created_at }}</p>
+
+        <hr>
+        <h4>Zadania w projekcie</h4>
+
+        {% if project.tasks.all %}
+            <ul class="list-group mt-3">
+                {% for task in project.tasks.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ task.title }}</span>
+                        <a href="{% url 'task_detail' task.pk %}" class="btn btn-sm btn-outline-primary">Zobacz</a>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Brak zadań</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="mt-4 d-flex gap-2">
+            <a href="{% url 'project_edit' project.pk %}" class="btn btn-warning">Edytuj</a>
+            <a href="{% url 'project_delete' project.pk %}" class="btn btn-danger">Usuń</a>
+            <a href="{% url 'project_list' %}" class="btn btn-secondary">Wróć</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

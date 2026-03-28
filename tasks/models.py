@@ -1,0 +1,72 @@
+from django.db import models
+
+# Create your models here.
+class Project(models.Model):
+    name = models.CharField(max_length=150)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class Task(models.Model):
+    # TextChoices daje listę wyboru w adminie
+    class Status(models.TextChoices):
+        TODO = "todo", "To do"
+        DOING = "doing", "Doing"
+        DONE = "done", "Done"
+
+    # Relacja 1:N (Project -> Task)
+    # Project (1) —— (N) Task
+    # ForeignKey w modelu Task
+
+    # project.tasks.all() - wszystkie taski do tego projektu
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="tasks",
+    )
+
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+
+    status = models.CharField(
+        max_length=10,
+        choices=Status.choices,
+        default=Status.TODO,
+    )
+
+    due_date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Relacja N:M (Task <-> Tag)
+    # ManyToManyField tworzy tabelę pośrednią
+    tags = models.ManyToManyField(
+        Tag,
+        blank=True,
+        related_name="tasks",
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(fields=["project", "title"], name="uniq_task_title_in_project")
+        ]
+
+    def __str__(self):
+        return self.title
+

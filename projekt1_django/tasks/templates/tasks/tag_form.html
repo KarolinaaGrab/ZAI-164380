@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edytuj tag{% else %}Dodaj tag{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="card-title mb-4">{% if form.instance.pk %}Edytuj tag{% else %}Dodaj tag{% endif %}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="mb-3">
+                <label class="form-label">Nazwa tagu</label>
+                {{ form.name }}
+                <div class="text-danger small">{{ form.name.errors }}</div>
+            </div>
+            <button type="submit" class="btn btn-success">Zapisz</button>
+            <a href="{% url 'tag_list' %}" class="btn btn-secondary">Anuluj</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

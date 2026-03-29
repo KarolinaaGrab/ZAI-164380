@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm, DateInput
-from .models import Task, Project
+from .models import Task, Project, Tag
 
 
 class TaskForm(ModelForm):
@@ -25,3 +25,8 @@ class ProjectForm(ModelForm):
     class Meta:
         model = Project
         fields = ["name", "description"]
+
+class TagForm(ModelForm):
+    class Meta:
+        model = Tag
+        fields = ["name"]

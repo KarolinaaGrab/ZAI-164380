@@ -5,9 +5,10 @@ from rest_framework import filters
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from books.serializers import BookSerializer
+from .serializers import BookSerializer
 from .models import Book
 from .filters import BookFilter
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 class BookListCreateView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
@@ -21,6 +22,11 @@ class BookListCreateView(generics.ListCreateAPIView):
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+
+    def get_permissions(self):
+        if self.request.method == "DELETE":
+            return [IsAuthenticated()]
+        return [AllowAny()]
 
 class DeleteAllBooksView(APIView):
     def delete(self, request):
